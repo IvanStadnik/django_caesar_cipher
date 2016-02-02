@@ -1,7 +1,6 @@
-LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-           'u', 'v', 'w', 'x', 'y', 'z']
-STANDARD = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153, 0.772, 4.025, 2.406, 6.749,
-            7.507, 1.929, 0.095, 5.987, 6.327, 9.056, 2.758, 0.978, 2.361, 0.150, 1.974, 0.074]
+STANDARD = {'a': 8.167, 'b': 1.492, 'c': 2.782, 'd': 4.253, 'e': 12.702, 'f': 2.228, 'g': 2.015, 'h': 6.094, 'i': 6.966,
+            'j': 0.153, 'k': 0.772, 'l': 4.025, 'm': 2.406, 'n': 6.749, 'o': 7.507, 'p': 1.929, 'q': 0.095, 'r': 5.987,
+            's': 6.327, 't': 9.056, 'u': 2.758, 'v': 0.978, 'w': 2.361, 'x': 0.150, 'y': 1.974, 'z': 0.074}
 
 
 class CaesarCipher:
@@ -10,7 +9,7 @@ class CaesarCipher:
     using Caesar cipher. It also gives option for counting frequency
     diagram for detecting cipher rotation
     """
-    letters = LETTERS
+    letters = [chr(x) for x in range(ord('a'), ord('z') + 1)]
     standard = STANDARD
     len_letters = len(letters)
 
@@ -29,24 +28,15 @@ class CaesarCipher:
         new_text = ''
         letters_upper = [x.upper() for x in self.letters]
         symbol_present = None
+        rotation = rotation if encrypt is True else rotation * -1
         for symbol in self.__text:
             if symbol in self.letters:
                 symbol_present = self.letters[:]
             elif symbol in letters_upper:
                 symbol_present = letters_upper
-            # If symbol is a letter we must encrypt or decrypt it
             if symbol_present:
-                position = symbol_present.index(symbol)
-                if encrypt:
-                    new_position = position + int(rotation)
-                    if new_position >= self.len_letters:
-                        new_position -= self.len_letters
-                    new_text += symbol_present[new_position]
-                else:
-                    new_position = position - int(rotation)
-                    if new_position < 0:
-                        new_position += self.len_letters
-                    new_text += symbol_present[new_position]
+                position = (symbol_present.index(symbol) + rotation + self.len_letters) % self.len_letters
+                new_text += symbol_present[position]
                 symbol_present = None
             else:
                 new_text += symbol
@@ -64,31 +54,20 @@ class CaesarCipher:
         else:
             text = text.lower()
         text_len = len(text)
-        count_symbols = {}
-        frequency = {}
-        for i in text:
-            if i in self.letters:
-                if count_symbols.get(i):
-                    count_symbols[i] += 1
-                else:
-                    count_symbols[i] = 1
-        for i in count_symbols:
-            frequency[i] = round((count_symbols[i] / text_len) * 100, 3)
+        count_symbols = {i: text.count(i) for i in self.letters if i in text}
+        frequency = {i: round((count_symbols[i] / text_len) * 100, 3) for i in count_symbols}
         return frequency
 
     def count_frequency(self, decrypted_text):
         """
         This method returns different between frequency of
-        decrypted text and standard frequency. It returns a float.
+        decrypted text and standard frequency.
         :param decrypted_text:
         :return:
         """
-        standard_dict = dict(zip(self.letters, self.standard))
-        text_frequency = 0.0
         frequency = self.get_frequency(decrypted_text)
-        for i in frequency:
-            text_frequency += abs((frequency[i] - standard_dict[i]))
-        return text_frequency
+        text_frequency = [abs((frequency[i] - self.standard[i])) for i in frequency]
+        return sum(text_frequency)
 
     def try_detect_rotation(self):
         """
@@ -96,16 +75,11 @@ class CaesarCipher:
         by looping of all possible combinations.
         :return:
         """
-        all_frequencies = []
-        for rot in range(26):
-            decrypted_text = self.caesar_encrypt_decrypt(rot, False)
-            all_frequencies.append(self.count_frequency(decrypted_text))
-        # we should return the minimum difference, between
-        # frequency of the decrypted text and standard frequency
+        all_frequencies = [self.count_frequency(self.caesar_encrypt_decrypt(rot, False)) for rot in range(26)]
         rotation = all_frequencies.index(min(all_frequencies))
         return rotation
 
-    def current_frequency(self):
+    def current_frequency(self, text=''):
         """
         This method returns a dictionary, which consist of a such elements:
         result['rotation'] - suggested offset of the text;
@@ -114,40 +88,18 @@ class CaesarCipher:
         result['frequency'] = current values of frequency of the symbols
         which are in the given text
         result['symbols'] = symbols for the diagram
+        :param text:
         :return:
         """
-        frequency = self.get_frequency()
         result = dict()
-        result['rotation'] = self.try_detect_rotation()
+        if not text:
+            result['rotation'] = self.try_detect_rotation()
+            frequency = self.get_frequency()
+        else:
+            frequency = self.get_frequency(text)
         symbols = list(sorted(frequency.keys()))
         symbols_frequency = [frequency[i] for i in symbols]
         result['symbols'] = symbols
         result['frequency'] = symbols_frequency
-        result['standard'] = []
-        for i in range(self.len_letters):
-            if self.letters[i] in symbols:
-                result['standard'].append(self.standard[i])
-        return result
-
-    def frequency_of_decrypted_text(self, decrypted_text):
-        """
-        This method returns a dictionary, which consist of a such elements:
-        result['standard'] - standard values of frequency of the symbols
-        which are in the given text
-        result['frequency'] = current values of frequency of the symbols
-        which are in the given text
-        result['symbols'] = symbols for the diagram
-        :param decrypted_text:
-        :return:
-        """
-        frequency = self.get_frequency(decrypted_text)
-        result = dict()
-        symbols = list(sorted(frequency.keys()))
-        symbols_frequency = [frequency[i] for i in symbols]
-        result['symbols'] = symbols
-        result['frequency'] = symbols_frequency
-        result['standard'] = []
-        for i in range(self.len_letters):
-            if self.letters[i] in symbols:
-                result['standard'].append(self.standard[i])
+        result['standard'] = [self.standard[i] for i in self.letters if i in symbols]
         return result

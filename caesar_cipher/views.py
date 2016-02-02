@@ -11,12 +11,12 @@ def caesar_cipher_page(request):
     :param request:
     :return:
     """
-    from .caesar_chiper_module import LETTERS, STANDARD
+    from .caesar_chiper_module import STANDARD
     data = dict()
     data['rotations'] = range(26)
     data['title'] = 'Caesar cipher application'
-    data['STANDARD'] = STANDARD
-    data['LETTERS'] = LETTERS
+    data['STANDARD'] = [STANDARD[i] for i in sorted(STANDARD.keys())]
+    data['LETTERS'] = list(sorted(STANDARD.keys()))
     return render(request, 'caesar_cipher/index.html', data)
 
 
@@ -49,7 +49,7 @@ def encrypt_text(request):
     text = CaesarCipher(json_dict['text_for_encrypt'])
     data = dict()
     data['ciphered_text'] = text.caesar_encrypt_decrypt(int(json_dict['rotation']))
-    data['frequency'] = text.frequency_of_decrypted_text(data['ciphered_text'])
+    data['frequency'] = text.current_frequency(data['ciphered_text'])
     return JsonResponse(data)
 
 
@@ -65,5 +65,5 @@ def decrypt_text(request):
     text = CaesarCipher(json_dict['text_for_decrypt'])
     data = dict()
     data['ciphered_text'] = text.caesar_encrypt_decrypt(int(json_dict['rotation']), False)
-    data['frequency'] = text.frequency_of_decrypted_text(data['ciphered_text'])
+    data['frequency'] = text.current_frequency(data['ciphered_text'])
     return JsonResponse(data)
