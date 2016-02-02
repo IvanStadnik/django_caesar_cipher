@@ -1,0 +1,156 @@
+html, body {
+    height: 100%;
+}
+#wrap {
+    background-color: #F8F8F8;
+    min-height: 100%;
+    position: relative;
+}
+#header {
+    background-color: #1C1B1E;
+    color: #fff;
+    font-style: italic;
+    height: auto;
+    padding-bottom: 10px;
+    text-align: center;
+}
+#content {
+    padding-top: 20px;
+    padding-bottom: 60px;
+}
+#footer {
+    background-color: #1C1B1E;
+    bottom: 0;
+    color: #fff;
+    display: block;
+    padding: 10px 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+textarea.caesar_text {
+    border-color: #c5c5c5;
+    border-style: ridge;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.65);
+    height: 200px;
+    padding: 5px;
+    resize: vertical;
+    width: 100%;
+}
+textarea.caesar_text[readonly="readonly"] {
+    background-color: #f7f7f7;
+    border-style: solid;
+}
+textarea.caesar_text:focus {
+    border-color: #3090ba;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.35);
+}
+.form_middle_elements {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    padding: 10px 0;
+}
+.form_middle_elements select {
+    width: 65px;
+    display: inline-block;
+    cursor: pointer;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.65);
+}
+.form_middle_elements select:hover {
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.35);
+}
+input[type="button"].caesar_btns.btn {
+    background-color: #3090BA;
+    color: #fff;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.65);
+}
+input[type="button"].caesar_btns.btn:hover {
+    background-color: #44B1E3;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.35);
+}
+.logo_img {
+    max-height: 80px;
+    margin-top: 20px;
+}
+#header h1 {
+    color: #d8cdb6;
+    font-family: cursive;
+    font-size: 22px;
+    font-style: normal;
+}
+.caesar_quote {
+    color: #d8cdb6;
+    display: block;
+    float: right;
+    font-family: cursive;
+    font-size: 16px;
+    font-style: italic;
+}
+.frequency_chart {
+    height: 400px;
+    margin-top: 15px;
+}
+.system_message {
+    padding: 0 25px;
+    font-size: 16px;
+}
+.close_obj {
+    background-color: #272822;
+    color: #fff;
+    display: none;
+    margin-top: 15px;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    position: relative;
+    text-align: center;
+}
+.close_obj .caesar_btns {
+    margin: 7px auto;
+}
+.close_message {
+    color: #f8f8f8;
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 20;
+}
+.instructions {
+    color: #0a2a38;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.instructions h2, .instructions h3 {
+    color: #072430;
+}
+.instructions h2 {
+    font-size: 26px;
+    text-align: center;
+}
+.instructions h3 {
+    font-size: 20px;
+}
+/*Popups*/
+#background_popup {
+    position: fixed;
+    width: 100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.48);
+    top: 0;
+    left: 0;
+    text-align: center;
+    z-index: 100;
+    display: none;
+}
+#loading {
+    background-image: url("../img/loading.gif");
+    background-size: cover;
+    display: inline-block;
+    height: 128px;
+    margin-top: -128px;
+    position: relative;
+    top: 50%;
+    width: 128px;
+}

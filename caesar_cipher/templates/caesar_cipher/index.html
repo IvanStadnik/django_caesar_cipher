@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'caesar_cipher/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'caesar_cipher/css/caesar_cipher.min.css' %}">
+    <script type="text/javascript" src="{% static 'caesar_cipher/js/jquery-1.12.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/js/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/jqplot/js/jquery.jqplot.js' %}"></script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/jqplot/js/jqplot.barRenderer.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/jqplot/js/jqplot.pieRenderer.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/jqplot/js/jqplot.categoryAxisRenderer.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/jqplot/js/jqplot.pointLabels.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.standard = {{ STANDARD|safe }};
+            window.ticks = {{ LETTERS|safe }};
+        });
+    </script>
+    <script type="text/javascript" src="{% static 'caesar_cipher/js/caesar_cipher.min.js' %}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'caesar_cipher/jqplot/css/jquery.jqplot.css' %}"/>
+</head>
+<body>
+<div id="wrap">
+    <div id="header" class="container-fluid">
+        <div class="row">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-xs-12 col-sm-3"><img class="logo_img"
+                                                         src="{% static 'caesar_cipher/img/logo_caesar.png' %}"
+                                                         alt="Logo"/></div>
+                    <div class="col-xs-12 col-sm-7">
+                        <h1>{{ title }}</h1>
+                        <span class="caesar_quote">Experience is the teacher of all things.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content" class="container">
+        <div class="row">
+            <div class="col-xs-12 instructions">
+                <h2>This is an application for encrypting and decrypting a text, which is ciphered using
+                "Caesar cipher" method.</h2>
+                <h3>How to use it:</h3>
+                To encrypt or decrypt the text, paste it into the box on the left. Select offset and
+                click the appropriate button. If the inserted text is encrypted, then the program using
+                frequency analysis tries to determine the offset, shows you a diagram of frequency analysis
+                of the pasted text and prompts you to decrypt it in the message below the diagram. After either
+                decrypting or encrypting of the text, the diagram shows frequency analysis of the changed text.
+            </div>
+            <div class="col-sm-5">
+                <textarea id="caesar_cipher_input" class="caesar_text" autocomplete="off"></textarea>
+            </div>
+            <div class="col-sm-2">
+                <div class="form_middle_elements">
+                    <select id="rotation_fo_action" class="form-control" autocomplete="off">
+                        {% for i in rotations %}
+                        <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form_middle_elements">
+                    <input id="caesar_encrypt_text" type="button" class="btn caesar_btns" value="Encrypt text"/>
+                </div>
+                <div class="form_middle_elements">
+                    <input id="caesar_decrypt_text" type="button" class="btn caesar_btns" value="Decrypt text"/>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <textarea id="caesar_cipher_output" class="caesar_text" readonly="readonly"
+                          autocomplete="off"></textarea>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" id="detecting_rotation_url"
+                   value="{% url 'caesar_cipher:detecting_cipher_rotation' %}"/>
+            <input type="hidden" id="caesar_encrypt_text_url"
+                   value="{% url 'caesar_cipher:encrypt_text' %}"/>
+            <input type="hidden" id="caesar_decrypt_text_url"
+                   value="{% url 'caesar_cipher:decrypt_text' %}"/>
+        </div>
+        <div class="row">
+            <div class="frequency_chart col-xs-12" id="chart1"></div>
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2 close_obj">
+                <span class="glyphicon glyphicon-remove close_message"></span>
+                <div class="row">
+                    <div class="col-xs-12 system_message">
+                        Many comparable societies, with different areas
+                        of interest, were founded in the nineteenth century (several of them
+                        also by Furnivall); not all have survived, and few have produced as many
+                        valuable volumes as EETS.
+                    </div>
+                    <input id="try_decrypt_text" type="button" class="btn caesar_btns" value="Try decrypt text"/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="footer" class="container-fluid">
+        &copy; 2016 Julius Caesar
+    </div>
+</div>
+<div id="background_popup">
+    <div id="loading"></div>
+</div>
+<!--<div id="system_message" class="system_message close_obj">-->
+<!--<span class="close_message"></span>-->
+<!--</div>-->
+</body>
+</html>
